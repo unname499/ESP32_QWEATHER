@@ -1,6 +1,10 @@
 #include <Arduino.h>
-#include <weather.h>
 #include <WiFi.h>
+#include "config.h"
+#include "weatherNow.h"
+
+#define WIFI_SSID "TP-LINK_16F3"
+#define WIFI_PASSWD "qwer123tyui456"
 
 const char* PRIVATE_KEY_PEM = R"(
 -----BEGIN PRIVATE KEY-----
@@ -11,50 +15,54 @@ MC4CAQAwBQYDK2VwBCIEIKo45LPn7Vg7bfscVbVkenFMuiTPkRXI7d/EdeNkChNw
 const char* KID = "TAGXVWVUAB";
 const char* SUB = "3G878JBYCK";
 
-WeatherNow weatherNow;
+// 创建全局 Config 对象（location 使用中文，http 请求时会自动 URL 编码）
+Config gc(PRIVATE_KEY_PEM, KID, SUB, 
+          "nw6vhhehnj.re.qweatherapi.com", "", "泰和");
 
-void setup(){
+// 将 Config 传递给 WeatherNow
+WeatherNow weatherNow(gc);
+
+void setup() {
     Serial.begin(115200);
-    WiFi.begin("TP-LINK_16F3", "qwer123tyui456");
-    while(WiFi.status() != WL_CONNECTED){
-        delay(500);
-    }
+    delay(1000);
+    Serial.println("\n=== SETUP START ===");
 
-    weatherNow.config(PRIVATE_KEY_PEM, KID, "nw6vhhehnj.re.qweatherapi.com"
-        , "", SUB, Func::urlEncode("泰和"));
-    IPAddress ip;
-    if (WiFi.hostByName("nw6vhhehnj.re.qweatherapi.com", ip)) {
-        Serial.print("DNS resolved: ");
-        Serial.println(ip);
-    } else {
-        Serial.println("DNS failed");
+    WiFi.begin(WIFI_SSID, WIFI_PASSWD);
+    Serial.print("连接 WiFi");
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(500);
+        Serial.print(".");
     }
-    if(weatherNow.get()){ // 获取天气更新
-    Serial.println(F("======Weahter Now Info======"));
-    Serial.print("Server Response: ");
-    Serial.println(weatherNow.getServerCode());  // 获取API状态码
-    Serial.print(F("Temperature: "));
-    Serial.println(weatherNow.getTemp());        // 获取实况温度
-    Serial.print(F("FeelsLike: "));
-    Serial.println(weatherNow.getFeelLike());    // 获取实况体感温度
-    Serial.print(F("Weather Now: "));
-    Serial.println(weatherNow.getWeatherText()); // 获取实况天气状况的文字描述
-    Serial.print(F("windDir: "));
-    Serial.println(weatherNow.getWindDir());     // 获取实况风向
-    Serial.print(F("WindScale: "));
-    Serial.println(weatherNow.getWindScale());   // 获取实况风力等级
-    Serial.print(F("Humidity: "));
-    Serial.println(weatherNow.getHumidity());    // 获取实况相对湿度百分比数值
-    Serial.print(F("Precip: "));
-    Serial.println(weatherNow.getPrecip());      // 获取实况降水量,毫米
-    Serial.println(F("========================"));
-  } else {    // 更新失败
-    Serial.println("Update Failed...");
-    Serial.print("Server Response: ");
-    Serial.println(weatherNow.getServerCode());
-  }
+    Serial.println(" 成功");
+    Serial.print("IP: ");
+    Serial.println(WiFi.localIP());
+
+    if (weatherNow.get()) {
+        Serial.println("\n====== Weather Now Info ======");
+        Serial.print("Server Response: ");
+        Serial.println(weatherNow.getServerCode());
+        Serial.print("Temperature: ");
+        Serial.println(weatherNow.getTemp());
+        Serial.print("FeelsLike: ");
+        Serial.println(weatherNow.getFeelLike());
+        Serial.print("Weather Now: ");
+        Serial.println(weatherNow.getWeatherText());
+        Serial.print("WindDir: ");
+        Serial.println(weatherNow.getWindDir());
+        Serial.print("WindScale: ");
+        Serial.println(weatherNow.getWindScale());
+        Serial.print("Humidity: ");
+        Serial.println(weatherNow.getHumidity());
+        Serial.print("Precip: ");
+        Serial.println(weatherNow.getPrecip());
+        Serial.println("==============================");
+    } else {
+        Serial.println("Update Failed...");
+        Serial.print("Server Response: ");
+        Serial.println(weatherNow.getServerCode());
+    }
 }
 
-void loop(){
-    delay(1000000);
+void loop() {
+    delay(10000);
 }
