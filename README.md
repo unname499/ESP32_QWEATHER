@@ -31,7 +31,7 @@
 
 	其他说明：
 
-	- 和风天气开发者**官方文档**：https://dev.qweather.com/；
+	- 和风天气开发者**官方文档**：[https://dev.qweather.com/](https://dev.qweather.com/)；
 
 ## 使用说明
 
