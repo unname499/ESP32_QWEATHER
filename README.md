@@ -48,7 +48,7 @@
   ```c++
 #include <weather.h>           // 导入此库头文件
 Config gc(your-private-key, your-kid, your-sub, 
-          your-api-host, your-api-key, your-real-address); // 配置，分别是：你的私钥、项目KID和SUB、你的API HOST、你的API KEY（可以为空，但这样必须填写私钥、KID和SUB）、要查询的地址
+          your-api-host, your-api-key, your-real-address); // 配置，分别是：你的私钥、项目KID和SUB、你的API HOST、你的API KEY（可以填写为""，但不能为空，如果这样写就必须填写私钥、KID和SUB）、要查询的地址
 WeatherNow weatherNow(gc);         // 建立weatherNow对象
 weatherNow.getServerCode();    // 获取API状态码   
 weatherNow.getTemp();          // 获取实况温度
