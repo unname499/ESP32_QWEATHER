@@ -46,13 +46,13 @@
 ### 获取实时天气信息
 
   ```c++
-WeatherNow weatherNow;         // 建立weatherNow对象
-weatherNow.config(UserKey, Location, Unit, Lang); // 配置请求信息
+#include <weather.h>           // 导入此库头文件
+Config gc(your-private-key, your-kid, your-sub, 
+          your-api-host, your-api-key, your-real-address); // 配置，分别是：你的私钥、项目KID和SUB、你的API HOST、你的API KEY（可以为空，但这样必须填写私钥、KID和SUB）、要查询的地址
+WeatherNow weatherNow(gc);         // 建立weatherNow对象
 weatherNow.getServerCode();    // 获取API状态码   
-weatherNow.getLastUpdate();    // 获取服务器更新天气信息时间
 weatherNow.getTemp();          // 获取实况温度
 weatherNow.getFeelLike();      // 获取实况体感温度
-weatherNow.getIcon();          // 获取当前天气图标代码
 weatherNow.getWeatherText();   // 获取实况天气状况的文字描述
 weatherNow.getWindDir();       // 获取实况风向
 weatherNow.getWindScale();     // 获取实况风力等级
